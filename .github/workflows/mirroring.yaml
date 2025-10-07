@@ -1,21 +1,28 @@
-name: Mirror to EPITECH repo
+name: Mirror on EPITECH repo
+# https://github.com/EpitechPGE3-2025/G-DOP-500-NAN-5-1-whanos-4.git
 
 on:
   push:
     branches:
-      - main
+        - 'main'
+
+env:
+  MIRROR_URL: "git@github.com:EpitechPGE3-2025/G-DOP-500-NAN-5-1-whanos-4.git"
 
 jobs:
-  mirror:
+  push_to_mirror:
+    name: push_to_mirror
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
         with:
-          fetch-depth: 0  # important to include full commit history and tags
-
-      - name: Mirror to secondary GitHub repository
-        run: |
-          git remote add mirror https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com:EpitechPGE3-2025/G-DOP-500-NAN-5-1-whanos-4.git
-          git push --mirror mirror
+          fetch-depth: 0
+      - name: Mirroring Repository
+        uses: pixta-dev/repository-mirroring-action@v1.1.1
+        with:
+          target_repo_url:
+            ${{ env.MIRROR_URL }}
+          ssh_private_key:
+            ${{ secrets.GIT_SSH_PRIVATE_KEY }}
