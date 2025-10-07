@@ -38,4 +38,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./docs/build
-          commit_message: "🚀 Deploy production docs from dev at ${{ github.sha }}"
+          commit_message: "🚀 Deploy production docs from main at ${{ github.sha }}"
