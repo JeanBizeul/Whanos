@@ -1,0 +1,21 @@
+name: Mirror to EPITECH repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # important to include full commit history and tags
+
+      - name: Mirror to secondary GitHub repository
+        run: |
+          git remote add mirror https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com:EpitechPGE3-2025/G-DOP-500-NAN-5-1-whanos-4.git
+          git push --mirror mirror
