@@ -7,6 +7,7 @@ on:
 
 jobs:
   deploy:
+    name: Build & Deploy
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,7 +31,9 @@ jobs:
         run: npm ci
 
       - name: Build docs
-        run: npm run build
+        run: |
+          export BASE_URL="/Whanos/"
+          npm run build
 
       - name: Deploy production docs
         uses: peaceiris/actions-gh-pages@v3
@@ -38,4 +41,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./docs/build
-          commit_message: "🚀 Deploy production docs from dev at ${{ github.sha }}"
+          commit_message: "🚀 Deploy production docs from main at ${{ github.sha }}"
