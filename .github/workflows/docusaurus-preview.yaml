@@ -7,6 +7,7 @@ on:
 
 jobs:
   preview:
+    name: Build & Deploy
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -31,7 +32,9 @@ jobs:
         run: npm ci
 
       - name: Build docs
-        run: npm run build
+        run: |
+          export BASE_URL="/Whanos/previews/${{ github.head_ref }}/"
+          npm run build
 
       - name: Deploy preview to GitHub Pages (branch folder)
         uses: peaceiris/actions-gh-pages@v3
