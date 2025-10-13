@@ -2,6 +2,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+const baseUrl = process.env.BASE_URL || '/whanos/';  // Used to make previews
+
 const config: Config = {
   title: 'Whanos docs',
   tagline: 'Happy whaling !',
@@ -15,7 +17,7 @@ const config: Config = {
   url: 'https://JeanBizeul.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/whanos/',
+  baseUrl: baseUrl,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
