@@ -7,6 +7,7 @@ on:
 
 jobs:
   preview:
+    name: Build & Deploy
     runs-on: ubuntu-latest
     defaults:
       run:
