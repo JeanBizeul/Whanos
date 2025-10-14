@@ -2,12 +2,12 @@ FROM python:3.12-bookworm
 
 SHELL ["/bin/bash", "-lc"]
 
-ONBUILD WORKDIR /app
+WORKDIR /app
 
-ONBUILD COPY requirements.txt .
+COPY requirements.txt .
 
-ONBUILD RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
-ONBUILD COPY app/ .
+COPY app/ .
 
-ONBUILD CMD ["python", "-m", "app"]
+CMD ["python", "-m", "app"]
