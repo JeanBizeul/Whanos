@@ -1,0 +1,14 @@
+FROM gcc:13.2 AS whanos-c
+
+WORKDIR /app
+
+COPY . .
+
+ONBUILD RUN if [ -f Makefile ]; \
+    then make; \
+    else \
+        echo "Makefile not found"; \
+        exit 1; \
+    fi
+
+ONBUILD CMD ["./compiled-app"]

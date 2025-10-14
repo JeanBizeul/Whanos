@@ -1,0 +1,14 @@
+FROM maven:3.9-openjdk-21 AS whanos-java
+
+WORKDIR /app
+
+COPY app .
+
+ONBUILD RUN if [ -f pom.xml ]; then \
+        mvn package -B -DoutputDirectory=/app/target; \
+    else \
+        echo "pom.xml not found."; \
+        exit 1; \
+    fi
+
+ONBUILD CMD ["java", "-jar", "target/app.jar"]
