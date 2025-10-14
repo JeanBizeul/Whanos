@@ -1,0 +1,12 @@
+FROM node:20.9 AS whanos-javascript
+
+COPY . .
+
+ONBUILD RUN if [-f package.json]; then \
+        npm install; \
+    else \
+        echo "package.json not found."; \
+        exit 1; \
+    fi
+
+ONBUILD CMD ["node", "."]
