@@ -33,3 +33,14 @@ On the dashboard, under the create menu, select Kubernetes.
 4. Set the cluster name to whanos-cluster.
 5. Check that it is linked to a project, the same one we used to setup the droplet.
 6. Click create cluster.
+
+## Step 3: Create sudoer user on the droplet
+
+1. SSH into the droplet using the IP address provided by digital ocean as root.
+2. Create a new user with the **command**: `adduser jenkins`
+3. Add the user to the sudo group with the command: `usermod -aG sudo jenkins`
+4. Add your public ssh key to `/home/jenkins/.ssh/authorized_keys` file.
+5. Change the ownership of the newly created directory to jenkins with the command: `chown -R jenkins:jenkins /home/jenkins`
+6. Logout and try to login as jenkins to verify everything is working.
+
+From now, every step happening on the droplet will be done as the jenkins user for more safety.
