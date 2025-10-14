@@ -4,19 +4,20 @@ SHELL ["/bin/bash", "-lc"]
 
 WORKDIR /app
 
-COPY /app/main.bf .
+COPY app .
 
 
-RUN apt update; apt-get -y install make
-
-
-RUN git clone https://github.com/catseye/Befunge-93.git && \
+RUN if [ -f main.bf ]; then \
+    apt update; apt-get -y install make && \
+    git clone https://github.com/catseye/Befunge-93.git && \
     cd Befunge-93 && \
     make && \
-    mv bin/bef ../
-
-
-RUN rm -rf Befunge-93
+    mv bin/bef ../ && \
+    rm -rf Befunge-93 \
+    else \
+        echo "main.bf not found."; \
+        exit 1; \
+    fi
 
 
 CMD ["./bef", "main.bf"]
