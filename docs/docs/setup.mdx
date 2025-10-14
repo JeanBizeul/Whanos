@@ -1,0 +1,35 @@
+---
+id: setup
+title: Setup
+---
+
+# Setup
+
+This guide will help you set up your development environment for the project. Follow the steps below to get started.
+
+## Prerequisites
+
+Have an account on Digital Ocean with enough credits to create a droplet & a kubernetes cluster.
+
+## Step 1: Setup the droplet
+
+On the dashboard, under the create menu, select Droplets.
+
+1. Choose a region close to you for the server location.
+2. Choose a basic droplet with ubuntu.
+3. Choose a regular plan with at least 2GB of RAM & 50ish GB of disk space.
+4. Choose between ssh keys or a password for authentication.
+5. Set jenkins as the hostname.
+6. Check that it is linked to a project, the same one we will use to setup kubernetes on.
+7. Click create droplet.
+
+## Step 2: Setup the kubernetes cluster
+
+On the dashboard, under the create menu, select Kubernetes.
+
+1. Choose a region close to you for the server location.
+2. Choose a basic cluster with at least 2 nodes, each with 2GB of RAM & 50ish GB of disk space.
+3. Set the version to the latest stable one.
+4. Set the cluster name to whanos-cluster.
+5. Check that it is linked to a project, the same one we used to setup the droplet.
+6. Click create cluster.
