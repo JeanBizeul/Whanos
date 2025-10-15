@@ -6,7 +6,6 @@ WORKDIR /app
 
 COPY app .
 
-
 RUN if [ -f main.bf ]; then \
     apt update; apt-get -y install make && \
     git clone https://github.com/catseye/Befunge-93.git && \
@@ -18,6 +17,5 @@ RUN if [ -f main.bf ]; then \
         echo "main.bf not found."; \
         exit 1; \
     fi
-
 
 CMD ["./bef", "main.bf"]

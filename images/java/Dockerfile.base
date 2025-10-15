@@ -5,10 +5,12 @@ WORKDIR /app
 COPY app .
 
 ONBUILD RUN if [ -f pom.xml ]; then \
-        mvn package -B -DoutputDirectory=/app/target; \
+        mvn package -B && \
+        mv target/*.jar ./ && \
+        rm -rf src/ target/ pom.xml && \
     else \
         echo "pom.xml not found."; \
         exit 1; \
     fi
 
-ONBUILD CMD ["java", "-jar", "target/app.jar"]
+ONBUILD CMD ["java", "-jar", "app.jar"]

@@ -13,5 +13,4 @@ RUN if [ -f requirements.txt ]; then \
         exit 1; \
     fi
 
-
 CMD ["python", "-m", "app"]

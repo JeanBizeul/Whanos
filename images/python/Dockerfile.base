@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-lc"]
 
 WORKDIR /app
 
-ONBUILD COPY app .
+COPY app .
 
 ONBUILD RUN if [ -f requirements.txt ]; then \
     pip install -r requirements.txt \
@@ -12,6 +12,5 @@ ONBUILD RUN if [ -f requirements.txt ]; then \
         echo "requirements.txt not found."; \
         exit 1; \
     fi
-
 
 ONBUILD CMD ["python", "-m", "app"]

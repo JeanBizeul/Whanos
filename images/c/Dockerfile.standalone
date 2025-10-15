@@ -5,10 +5,11 @@ WORKDIR /app
 COPY . .
 
 RUN if [ -f Makefile ]; \
-    then make; \
+    then make && \
+    rm -rf app/ Makefile && \
     else \
-        echo "Makefile not found"; \
-        exit 1; \
+        echo "Makefile not found" && \
+        exit 1 && \
     fi
 
 CMD ["./compiled-app"]
