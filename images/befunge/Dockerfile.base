@@ -1,0 +1,21 @@
+FROM ubuntu:24.4
+
+SHELL ["/bin/bash", "-lc"]
+
+WORKDIR /app
+
+COPY app .
+
+ONBUILD RUN if [ -f main.bf ]; then \
+    apt update; apt-get -y install make && \
+    git clone https://github.com/catseye/Befunge-93.git && \
+    cd Befunge-93 && \
+    make && \
+    mv bin/bef ../ && \
+    rm -rf Befunge-93 \
+    else \
+        echo "main.bf not found."; \
+        exit 1; \
+    fi
+
+ONBUILD CMD ["./bef", "main.bf"]
