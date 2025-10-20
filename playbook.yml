@@ -5,7 +5,7 @@
     - Jenkins
 
 #- name: Setup Kubernetes
-#  hosts: k8s_nodes
+#  hosts: k8sCluster
 #  become: yes
 #  roles:
 #    - Kubernetes
