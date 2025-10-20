@@ -1,0 +1,11 @@
+- name: Setup Jenkins
+  hosts: jenkinksVM
+  become: yes
+  roles:
+    - Jenkins
+
+#- name: Setup Kubernetes
+#  hosts: k8s_nodes
+#  become: yes
+#  roles:
+#    - Kubernetes
