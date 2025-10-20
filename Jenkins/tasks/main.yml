@@ -1,2 +1,10 @@
 ---
 # tasks file for whanos
+
+- name: Install updates
+
+- name: Install essentials packages
+
+- name: Install Jenkins
+
+- name:
