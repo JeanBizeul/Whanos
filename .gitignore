@@ -6,3 +6,4 @@ whanos
 Repositories/
 Jenkins/files/docker-compose.yml
 Jenkins/files/Dockerfile
+jenkins-cli.jar

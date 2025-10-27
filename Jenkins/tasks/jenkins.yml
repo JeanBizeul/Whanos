@@ -3,7 +3,7 @@
 - name: Install Java
   become: true
   apt:
-    name: openjdk-17-jdk
+    name: openjdk-21-jdk
     state: present
 
 - name: Add Jenkinks repository
@@ -24,16 +24,6 @@
     name: jenkins
     state: present
 
-- name: Start service jenkins
-  become: true
-  service:
-    name: jenkins
-    state: started
-
-- name: Enable service jenkins
-  service:
-    name: jenkins
-    enabled: yes
 
 - name: Allow traffic to port 8080
   become: true
@@ -54,8 +44,14 @@
       - configuration-as-code
       - folder
       - ws-cleanup
+      - role-strategy
       - credentials
     state: present
+
+- name: Start service jenkins
+  become: true
+  service:
+    name: jenkins
 
 - name: Create CasC config folder
   file:
@@ -68,13 +64,23 @@
     dest: "{{jenkins_casc_config}}"
 
 
+- name: Copy Groovy file
+  copy:
+    src: ../files/Jobs_dsl.groovy
+    dest: "{{jenkins_casc_config}}"
+
 - name: Set env variables
   environment:
     CASC_JENKINS_CONFIG: "{{ jenkins_casc_config}}"
     JAVA_OPTS: "{{ startjenkins_java_opts}}"
 
-- name: Restart jenkins
+- name: Start service jenkins
   become: true
   service:
     name: jenkins
-    state: restarted
+    state: started
+
+- name: Enable service jenkins
+  service:
+    name: jenkins
+    enabled: yes
