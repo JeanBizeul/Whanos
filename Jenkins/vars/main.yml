@@ -1,2 +1,7 @@
 ---
 # variables associated with this role
+
+vars:
+  jenkins_home: /var/lib/jenkins
+  jenkins_casc_config: "{{jenkins_home}}/casc_configs"
+  jenkins_java_opts: -Djenkins.install.runSetupWizard=false

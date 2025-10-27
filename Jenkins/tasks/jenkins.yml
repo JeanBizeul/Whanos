@@ -44,3 +44,37 @@
 - name: Reload ufw rules
   become: true
   command: ufw reload
+
+- name: Install jenkins plugins
+  community.general.jenkins_plugin:
+    name:
+      - docker
+      - git
+      - job_dsl
+      - configuration-as-code
+      - folder
+      - ws-cleanup
+      - credentials
+    state: present
+
+- name: Create CasC config folder
+  file:
+    path: "{{jenkins_casc_config}}"
+    state: directory
+
+- name: Copy CasC file
+  copy:
+    src: ../files/configuration.yaml
+    dest: "{{jenkins_casc_config}}"
+
+
+- name: Set env variables
+  environment:
+    CASC_JENKINS_CONFIG: "{{ jenkins_casc_config}}"
+    JAVA_OPTS: "{{ startjenkins_java_opts}}"
+
+- name: Restart jenkins
+  become: true
+  service:
+    name: jenkins
+    state: restarted
