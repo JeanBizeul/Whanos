@@ -4,3 +4,5 @@ inventory.yml
 whanos
 *.pub
 Repositories/
+Jenkins/files/docker-compose.yml
+Jenkins/files/Dockerfile
