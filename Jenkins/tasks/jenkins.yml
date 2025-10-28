@@ -1,4 +1,3 @@
-
 # Install Jenkins
 - name: Install Java
   become: true
@@ -18,12 +17,33 @@
     dest: /etc/apt/sources.list.d/jenkins.list
     content: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
 
-- name: Install Jenkinks
+- name: Install Jenkins
   become: true
   apt:
     name: jenkins
     state: present
 
+- name: Start service jenkins
+  become: true
+  service:
+    name: jenkins
+    state: started
+
+
+- name: Ensure Jenkins JAVA_OPTS are set
+  lineinfile:
+    path: /etc/default/jenkins
+    regexp: '^JAVA_OPTS='
+    line: "{{ jenkins_java_opts }}"
+    create: yes
+  become: true
+
+
+- name: Start service jenkins
+  become: true
+  service:
+    name: jenkins
+    state: started
 
 - name: Allow traffic to port 8080
   become: true
@@ -35,44 +55,40 @@
   become: true
   command: ufw reload
 
-- name: Install jenkins plugins
-  community.general.jenkins_plugin:
-    name:
-      - docker
-      - git
-      - job_dsl
-      - configuration-as-code
-      - folder
-      - ws-cleanup
-      - role-strategy
-      - credentials
-    state: present
 
-- name: Start service jenkins
+- name: Download Jenkins Plugin Manager CLI
   become: true
-  service:
-    name: jenkins
+  command: >
+    wget -O /usr/share/jenkins/jenkins-plugin-manager.jar
+    https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar
+
+
+- name: Install Jenkins plugins using Plugin Manager CLI
+  command: >
+    java -jar /usr/share/jenkins/jenkins-plugin-manager.jar \
+      --war /usr/share/java/jenkins.war \
+      --plugin-download-directory /var/lib/jenkins/plugins/ \
+      --plugins docker-plugin git job-dsl configuration-as-code cloudbees-folder ws-cleanup role-strategy credentials
+  become: true
 
 - name: Create CasC config folder
   file:
-    path: "{{jenkins_casc_config}}"
+    path: "{{ jenkins_casc_config }}"
     state: directory
 
 - name: Copy CasC file
   copy:
     src: ../files/configuration.yaml
-    dest: "{{jenkins_casc_config}}"
+    dest: "{{ jenkins_casc_config }}"
 
 
 - name: Copy Groovy file
   copy:
     src: ../files/Job_dsl.groovy
-    dest: "{{jenkins_casc_config}}"
-
-- name: Set env variables
+    dest: "{{ jenkins_casc_config }}"
   environment:
-    CASC_JENKINS_CONFIG: "{{ jenkins_casc_config}}"
-    JAVA_OPTS: "{{ startjenkins_java_opts}}"
+    CASC_JENKINS_CONFIG: "{{ jenkins_casc_config }}"
+
 
 - name: Start service jenkins
   become: true
