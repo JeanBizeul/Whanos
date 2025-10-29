@@ -1,29 +1,38 @@
 ---
 id: setup
-title: Setup
+title: Project Setup
 ---
 
-# Setup
-
-This guide will help you set up your development environment for the project. Follow the steps below to get started.
+This page will guide you you trough the steps required to the setup of the infrastructure required to run the Whanos project on Digital Ocean.
 
 ## Prerequisites
 
-Have an account on Digital Ocean with enough credits to create a droplet & a kubernetes cluster.
+You need to have an account on [Digital Ocean](https://cloud.digitalocean.com) with a payment method linked.
 
-## Step 1: Setup the droplet
+The project is not free to run, you will be charged for the droplets, kubernetes cluster & docker registry you will create.
+The cost should be around 20-30$ per month depending on your usage.
+
+## Virtual machines specifications
+
+You need three part of infrastructure to run the project:
+
+- A server to run Jenkins.
+- A kubernetes cluster to run the whanos services.
+- A docker registry to store the docker images built by jenkins and used by the kubernetes cluster.
+
+### Step 1: Setup server for Jenkins
 
 On the dashboard, under the create menu, select Droplets.
 
 1. Choose a region close to you for the server location.
 2. Choose a basic droplet with ubuntu.
-3. Choose a regular plan with at least 2GB of RAM & 50ish GB of disk space.
-4. Choose between ssh keys or a password for authentication.
+3. Choose a regular CPU plan with at least one core & 2GB of RAM.
+4. Choose between ssh keys or a password for authentication. For all exemples in this tutorial, we will use the ssh method.
 5. Set jenkins as the hostname.
 6. Check that it is linked to a project, the same one we will use to setup kubernetes on.
 7. Click create droplet.
 
-## Step 2: Setup the kubernetes cluster
+### Step 2: Setup the kubernetes cluster
 
 On the dashboard, under the create menu, select Kubernetes.
 
@@ -34,23 +43,57 @@ On the dashboard, under the create menu, select Kubernetes.
 5. Check that it is linked to a project, the same one we used to setup the droplet.
 6. Click create cluster.
 
-## Step 3: Setup the docker registry
+### Step 3: Setup the docker registry
 
 On the left menu of the website, under the manage section, select Container Registry & then create.
 
 1. Select your prefered subscription plan, the free one can only contain a couple of images, you may want to take the basic plan to have enough space
 2. Try to take a region close to your droplets for better performance.
-3. Give it a clear name (you can't change it later !), like whanos-docker-registry.
+3. Give it a clear name (you can't change it later !), like `whanos-docker-registry`.
 4. Once created, go to the settings tab of the registry and select edit for the DigitalOcean Kubernetes integration.
 5. Select the cluster you created earlier and it should be done in a few seconds.
 
-## Step 4: Create sudoer user on the droplet
+## Configuring the Jenkins server
 
-1. SSH into the droplet using the IP address provided by digital ocean as root.
-2. Create a new user with the **command**: `adduser jenkins`
-3. Add the user to the sudo group with the command: `usermod -aG sudo jenkins`
-4. Add your public ssh key to `/home/jenkins/.ssh/authorized_keys` file.
-5. Change the ownership of the newly created directory to jenkins with the command: `chown -R jenkins:jenkins /home/jenkins`
-6. Logout and try to login as jenkins to verify everything is working.
+### Step 1: Create a new user for Jenkins
 
-From now, every step happening on the droplet will be done as the jenkins user for more safety.
+```bash
+# SSH into the droplet using the IP address provided by digital ocean as root:
+ssh root@your_droplet_ip
+
+# Create a new user named jenkins
+adduser jenkins
+
+# Add the user to the suro group
+usermod -aG sudo jenkins
+
+# Add your public ssh key to the authorized_keys file
+mkdir /home/jenkins/.ssh
+cat your_public_key > /home/jenkins/.ssh/authorized_keys
+
+# Give ownership of the .ssh directory to the jenkins user
+chown -R jenkins:jenkins /home/jenkins/.ssh
+```
+
+Now you should be able to logout & login again as the jenkins user.
+
+:::info
+
+From now on, every actions happening on the droplet will be done as the jenkins user for more safety.
+
+:::
+
+
+### Step 2: Installation of Jenkins
+
+Follow the intructions on the official [Jenkins documentation](https://www.jenkins.io/doc/book/installing/linux/#debianubuntu).
+
+It is recommended to [install the LTS version](https://www.jenkins.io/doc/book/installing/linux/#debian-stable) for more stability.
+
+Following the tutorial, you will end on the final section "Customizing Jenkins with plugins".
+
+For the project, here is the list of required plugins to install:
+
+- configure as code
+
+:::
