@@ -34,7 +34,17 @@ On the dashboard, under the create menu, select Kubernetes.
 5. Check that it is linked to a project, the same one we used to setup the droplet.
 6. Click create cluster.
 
-## Step 3: Create sudoer user on the droplet
+## Step 3: Setup the docker registry
+
+On the left menu of the website, under the manage section, select Container Registry & then create.
+
+1. Select your prefered subscription plan, the free one can only contain a couple of images, you may want to take the basic plan to have enough space
+2. Try to take a region close to your droplets for better performance.
+3. Give it a clear name (you can't change it later !), like whanos-docker-registry.
+4. Once created, go to the settings tab of the registry and select edit for the DigitalOcean Kubernetes integration.
+5. Select the cluster you created earlier and it should be done in a few seconds.
+
+## Step 4: Create sudoer user on the droplet
 
 1. SSH into the droplet using the IP address provided by digital ocean as root.
 2. Create a new user with the **command**: `adduser jenkins`
