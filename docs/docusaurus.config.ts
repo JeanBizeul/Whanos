@@ -58,7 +58,7 @@ const config: Config = {
       title: 'Whanos docs',
       logo: {
         alt: 'Whanos logo',
-        src: 'img/logo.svg',
+        src: 'img/whanos_logo.jpg',
         href: '/',
       },
       items: [
@@ -102,6 +102,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      additionalLanguages: ['bash'],
     },
   } satisfies Preset.ThemeConfig,
 };
