@@ -39,7 +39,7 @@
   become: true
 
 
-- name: Start service jenkins
+- name: Start & enable service jenkins
   become: true
   service:
     name: jenkins
@@ -89,13 +89,9 @@
     CASC_JENKINS_CONFIG: "{{ jenkins_casc_config }}"
 
 
-- name: Start service jenkins
+- name: Start & enable service jenkins
   become: true
   service:
     name: jenkins
     state: started
-
-- name: Enable service jenkins
-  service:
-    name: jenkins
-    enabled: yes
+    enabled: true
