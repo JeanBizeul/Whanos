@@ -1,0 +1,13 @@
+- name: Setup Jenkins
+  hosts: jenkinksVM
+  become: yes
+  vars_files:
+    - secret.yml
+  roles:
+    - Jenkins
+
+#- name: Setup Kubernetes
+#  hosts: k8sCluster
+#  become: yes
+#  roles:
+#    - Kubernetes

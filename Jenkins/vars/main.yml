@@ -1,2 +1,6 @@
 ---
 # variables associated with this role
+
+jenkins_home: /var/lib/jenkins
+jenkins_casc_config: "{{jenkins_home}}/casc_configs"
+jenkins_java_opts: JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true -Djenkins.security.BasicHeaderApiTokenAuthenticator.disable=true"
