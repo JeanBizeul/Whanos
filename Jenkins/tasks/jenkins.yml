@@ -51,10 +51,8 @@
   ufw:
     rule: allow
     port: '8080'
+    state: reloaded
 
-- name: Reload ufw rules
-  become: true
-  command: ufw reload
 
 
 - name: Download Jenkins Plugin Manager CLI
