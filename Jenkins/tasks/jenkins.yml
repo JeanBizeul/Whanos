@@ -44,6 +44,7 @@
   service:
     name: jenkins
     state: started
+    enabled: true
 
 - name: Allow traffic to port 8080
   become: true
