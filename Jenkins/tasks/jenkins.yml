@@ -39,13 +39,6 @@
   become: true
 
 
-- name: Start & enable service jenkins
-  become: true
-  service:
-    name: jenkins
-    state: started
-    enabled: true
-
 - name: Allow traffic to port 8080
   become: true
   ufw:
