@@ -55,6 +55,14 @@
     dest: /usr/share/jenkins/jenkins-plugin-manager.jar
     mode: '0755'
 
+- name: Ensure plugin directory is owned by jenkins
+  become: true
+  file:
+    path: /var/lib/jenkins/plugins
+    owner: jenkins
+    group: jenkins
+    state: directory
+    recurse: yes
 
 
 - name: Install Jenkins plugins using Plugin Manager CLI
