@@ -50,9 +50,11 @@
 
 - name: Download Jenkins Plugin Manager CLI
   become: true
-  command: >
-    wget -O /usr/share/jenkins/jenkins-plugin-manager.jar
-    https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar
+  get_url:
+    url: https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar
+    dest: /usr/share/jenkins/jenkins-plugin-manager.jar
+    mode: '0755'
+
 
 
 - name: Install Jenkins plugins using Plugin Manager CLI
