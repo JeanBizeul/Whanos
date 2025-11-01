@@ -23,12 +23,6 @@
     name: jenkins
     state: present
 
-- name: Start service jenkins
-  become: true
-  service:
-    name: jenkins
-    state: started
-
 
 - name: Ensure Jenkins JAVA_OPTS are set
   lineinfile:
@@ -39,12 +33,20 @@
   become: true
 
 
+- name: Set CasC environment variable
+  become: true
+  lineinfile:
+    path: /etc/default/jenkins
+    regexp: '^CASC_JENKINS_CONFIG='
+    line: "CASC_JENKINS_CONFIG={{ jenkins_casc_config }}"
+
+
 - name: Allow traffic to port 8080
   become: true
   ufw:
     rule: allow
     port: '8080'
-    state: reloaded
+    state: enabled
 
 
 
