@@ -51,12 +51,19 @@
     name: jenkins
     state: present
 
-- name: Allow traffic to port 8080
+- name: Enable ufw & authorize ssh port
+  become: true
+  ufw:
+    rule: allow
+    port: '22'
+    state: enabled
+
+- name: Allow traffic trough port 8080
   become: true
   ufw:
     rule: allow
     port: '8080'
-    state: reloaded
+    state: enabled
 
 
 - name: Download Jenkins Plugin Manager CLI
