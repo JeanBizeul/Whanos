@@ -1,2 +1,20 @@
----
 # handlers file for whanos
+
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: Reload systemd and restart Jenkins
+  become: true
+
+- name: Restart Jenkins
+  service:
+    name: jenkins
+    state: restarted
+    enabled: yes
+    listen: Reload systemd and restart Jenkins
+  become: true
+
+- name: Debug handler run
+  debug:
+    msg: "Handler is running!"
+  listen: Reload systemd and restart Jenkins

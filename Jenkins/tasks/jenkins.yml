@@ -1,4 +1,32 @@
-# Install Jenkins
+# Purge Jenkins and remove all config/data files
+#- name: Stop Jenkins if running
+#  become: true
+#  service:
+#    name: jenkins
+#    state: stopped
+#    enabled: false
+#  ignore_errors: true
+#
+#- name: Purge Jenkins package
+#  become: true
+#  apt:
+#    name: jenkins
+#    state: absent
+#    purge: yes
+#    autoremove: yes
+#
+#- name: Remove leftover Jenkins files
+#  become: true
+#  file:
+#    path: "{{ item }}"
+#    state: absent
+#  loop:
+#    - /etc/default/jenkins
+#    - /var/lib/jenkins
+#    - /var/log/jenkins
+#    - /usr/share/jenkins
+# ---------------------------------------
+
 - name: Install Java
   become: true
   apt:
@@ -23,45 +51,20 @@
     name: jenkins
     state: present
 
-- name: Start service jenkins
-  become: true
-  service:
-    name: jenkins
-    state: started
-
-
-- name: Ensure Jenkins JAVA_OPTS are set
-  lineinfile:
-    path: /etc/default/jenkins
-    regexp: '^JAVA_OPTS='
-    line: "{{ jenkins_java_opts }}"
-    create: yes
-  become: true
-
-
-- name: Start service jenkins
-  become: true
-  service:
-    name: jenkins
-    state: started
-
 - name: Allow traffic to port 8080
   become: true
   ufw:
     rule: allow
-    port: '8080'
+    port: "8080"
 
 - name: Reload ufw rules
-  become: true
   command: ufw reload
-
 
 - name: Download Jenkins Plugin Manager CLI
   become: true
   command: >
     wget -O /usr/share/jenkins/jenkins-plugin-manager.jar
     https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar
-
 
 - name: Install Jenkins plugins using Plugin Manager CLI
   command: >
@@ -80,23 +83,39 @@
   copy:
     src: ../files/configuration.yaml
     dest: "{{ jenkins_casc_config }}"
-
+    owner: jenkins
+    group: jenkins
+    mode: "0644"
+  become: true
 
 - name: Copy Groovy file
   copy:
     src: ../files/Job_dsl.groovy
     dest: "{{ jenkins_casc_config }}"
-  environment:
-    CASC_JENKINS_CONFIG: "{{ jenkins_casc_config }}"
-
-
-- name: Start service jenkins
+    owner: jenkins
+    group: jenkins
+    mode: "0644"
   become: true
-  service:
-    name: jenkins
-    state: started
 
-- name: Enable service jenkins
-  service:
-    name: jenkins
-    enabled: yes
+- name: Ensure Jenkins uses /etc/default/jenkins in systemd
+  block:
+    - name: Create systemd override directory
+      file:
+        path: /etc/systemd/system/jenkins.service.d
+        state: directory
+      become: true
+
+    - name: Create systemd override to source /etc/default/jenkins
+      copy:
+        dest: /etc/systemd/system/jenkins.service.d/override.conf
+        content: |
+          [Service]
+          ExecStart=
+          Environment="{{ jenkins_java_vars }}"
+          Environment="{{ jenkins_java_args }}"
+          Environment="{{ jenkins_casc_env_var }}"
+          ExecStart=/usr/bin/java $JAVA_ARGS -jar /usr/share/java/jenkins.war $JENKINS_ARGS
+          User=jenkins
+          Group=jenkins
+      notify: Reload systemd and restart Jenkins
+      become: true
