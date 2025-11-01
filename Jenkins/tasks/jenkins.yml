@@ -55,10 +55,9 @@
   become: true
   ufw:
     rule: allow
-    port: "8080"
+    port: '8080'
+    state: reloaded
 
-- name: Reload ufw rules
-  command: ufw reload
 
 - name: Download Jenkins Plugin Manager CLI
   become: true
@@ -117,5 +116,5 @@
           ExecStart=/usr/bin/java $JAVA_ARGS -jar /usr/share/java/jenkins.war $JENKINS_ARGS
           User=jenkins
           Group=jenkins
-      notify: Reload systemd and restart Jenkins
+      notify: Reload systemd and start Jenkins
       become: true
