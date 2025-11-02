@@ -1,0 +1,7 @@
+- name: Setup Jenkins
+  hosts: jenkinsServer
+  become: yes
+  roles:
+    - Jenkins
+  environment:
+    DEBIAN_FRONTEND: noninteractive # Required because installing certain packages via apt reuires confirmation from user thus stucking ansible

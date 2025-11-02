@@ -1,0 +1,27 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: ${JENKINS_ADMIN_USERNAME}
+          password: ${JENKINS_ADMIN_PASSWORD}
+
+  # authorizationStrategy:
+  #   roleStrategy:
+  #     roles:
+  #       global:
+  #         admin:
+  #           permissions:
+  #             - Overall/Administer
+  #     assignments:
+  #       ${JENKINS_ADMIN_USERNAME}: ["admin"]
+
+tool:
+  git:
+    installations:
+      - name: git
+        home: /usr/local/bin/git
+
+jobs:
+  - file: /var/lib/jenkins/casc_configs/images_job_dsl.groovy
+  - file: /var/lib/jenkins/casc_configs/link_project_job_dsl.groovy

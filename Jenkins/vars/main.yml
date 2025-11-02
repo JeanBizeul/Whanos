@@ -1,0 +1,5 @@
+---
+# variables associated with this role
+
+jenkins_java_opts: "-Djenkins.install.runSetupWizard=false"
+jenkins_casc_config: "/var/lib/jenkins/casc_configs"

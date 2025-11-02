@@ -1,0 +1,23 @@
+---
+# tasks file for whanos
+
+- name: Install updates
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install essential packages
+  become: true
+  apt:
+    name:
+      - git
+      - build-essential
+    state: present
+
+
+- name: Include jenkins tasks
+  include_tasks: jenkins.yml
+
+- name: Include docker tasks
+  include_tasks: docker.yml

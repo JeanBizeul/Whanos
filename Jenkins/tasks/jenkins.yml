@@ -1,0 +1,157 @@
+- name: Install Java
+  become: true
+  apt:
+    name: openjdk-21-jdk
+    state: present
+
+- name: Add Jenkins repository
+  become: true
+  get_url:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    dest: /usr/share/keyrings/jenkins-keyring.asc
+
+- name: Add Jenkins apt repository
+  become: true
+  copy:
+    dest: /etc/apt/sources.list.d/jenkins.list
+    content: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
+
+# Required to make it aware of the new Jenkins repository
+- name: Update apt cache
+  become: true
+  apt:
+    update_cache: yes
+
+- name: Install Jenkins
+  become: true
+  apt:
+    name: jenkins
+    state: present
+
+# Jenkins needs to be stopped when changing it's configuration
+- name: Make sure jenkins is stopped
+  become: true
+  systemd:
+    name: jenkins
+    state: stopped
+    enabled: yes
+
+- name: Enable ufw & authorize ssh port
+  become: true
+  ufw:
+    rule: allow
+    port: '22'
+    state: enabled
+
+- name: Allow traffic trough port 8080
+  become: true
+  ufw:
+    rule: allow
+    port: '8080'
+    state: enabled
+
+- name: Create CasC config folder
+  file:
+    path: "{{ jenkins_casc_config }}"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: "0755"
+
+
+- name: Copy CasC file
+  copy:
+    src: ../files/configuration.yaml
+    dest: "{{ jenkins_casc_config }}"
+    owner: jenkins
+    group: jenkins
+    mode: "0644"
+
+- name: Copy job dsl Groovy files
+  block:
+    - name: Copy images job dsl Groovy file
+      copy:
+        src: ../files/images_job_dsl.groovy
+        dest: "{{ jenkins_casc_config }}"
+        owner: jenkins
+        group: jenkins
+        mode: "0644"
+    - name: Copy link project job dsl Groovy file
+      copy:
+        src: ../files/link_project_job_dsl.groovy
+        dest: "{{ jenkins_casc_config }}"
+        owner: jenkins
+        group: jenkins
+        mode: "0644"
+
+- name: Download Jenkins Plugin Manager CLI
+  get_url:
+    url: "https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar"
+    dest: /usr/share/jenkins/jenkins-plugin-manager.jar
+    mode: '0755'
+  become: true
+
+- name: Ensure plugins directory exists
+  file:
+    path: /var/lib/jenkins/plugins
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: '0755'
+
+- name: Install Jenkins plugins via CLI
+  command: >
+    java -jar /usr/share/jenkins/jenkins-plugin-manager.jar
+    --war /usr/share/java/jenkins.war
+    --plugin-download-directory /var/lib/jenkins/plugins
+    --plugins configuration-as-code job-dsl docker-plugin git role-strategy cloudbees-folder ws-cleanup  credentials
+  become: true
+
+
+- name: Give jenkins ownership of /var/lib/jenkins/
+  file:
+    path: /var/lib/jenkins/
+    recurse: yes
+    owner: jenkins
+    group: jenkins
+  become: true
+
+
+
+# This make sure jenkins gets the -Djenkins.install.runSetupWizard=false argument when launching to disable the setup wizard
+# It also sets the location of the CasC configuration file
+# All of this is done by creating a systemd override file for the jenkins service
+- name: Override Jenkins systemd service to add JCasC env vars & disable setup wizard
+  block:
+    - name: Create systemd override directory
+      file:
+        path: /etc/systemd/system/jenkins.service.d
+        state: directory
+      become: true
+
+    - name: Create systemd override file for jenkins.service
+      copy:
+        dest: /etc/systemd/system/jenkins.service.d/override.conf
+        # -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+        content: |
+          [Service]
+          Environment="JAVA_OPTS={{ jenkins_java_opts }}"
+          Environment="CASC_JENKINS_CONFIG={{ jenkins_casc_config }}/configuration.yaml"
+          Environment="JENKINS_ADMIN_USERNAME={{ jenkins_admin_username }}"
+          Environment="JENKINS_ADMIN_PASSWORD={{ jenkins_admin_password }}"
+      become: true
+
+
+# Not on a handler as I need it before the restart when I ovverride the systemd service
+- name: Reload systemd daemon
+  become: true
+  systemd:
+    daemon_reload: yes
+
+
+# Always restart here because almost all of the steps above require a jenkins restart to take effect
+- name: Restart jenkins
+  become: true
+  systemd:
+    name: jenkins
+    state: restarted

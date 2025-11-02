@@ -1,2 +1,10 @@
 Notes
 ToDo
+inventory.yml
+whanos
+*.pub
+Repositories/
+Jenkins/files/docker-compose.yml
+Jenkins/files/Dockerfile
+jenkins-cli.jar
+vault_pass.txt

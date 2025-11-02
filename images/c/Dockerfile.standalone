@@ -1,0 +1,15 @@
+FROM gcc:13.2 AS whanos-c
+
+WORKDIR /app
+
+COPY . .
+
+RUN if [ -f Makefile ]; \
+    then make && \
+    rm -rf app/ Makefile && \
+    else \
+        echo "Makefile not found" && \
+        exit 1 && \
+    fi
+
+CMD ["./compiled-app"]
