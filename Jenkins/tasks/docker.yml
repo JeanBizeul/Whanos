@@ -44,3 +44,12 @@
     name: docker
     enabled: yes
     state: started
+
+- name: Copy Whanos images into the remote machine
+  copy:
+    src: ../../images
+    dest: Whanos-images
+    owner: jenkins
+    group: jenkins
+
+
