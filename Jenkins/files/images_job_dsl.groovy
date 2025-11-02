@@ -27,4 +27,14 @@ freeStyleJob('Whanos base images/whanos-befunge') {
 
 freeStyleJob('Whanos base images/Build all base images') {
     disabled(false)
+        publishers {
+        downstream(
+            'whanos-java',
+            'whanos-c',
+            'whanos-javascript',
+            'whanos-python',
+            'whanos-befunge',
+            'FAILURE'
+        )
+    }
 }
