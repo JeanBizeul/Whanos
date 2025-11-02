@@ -1,0 +1,152 @@
+---
+id: setup
+title: Project Setup
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+This page will guide you you trough the steps required to the setup of the infrastructure required to run the Whanos project on Digital Ocean.
+
+## Prerequisites
+
+You need to have an account on [Digital Ocean](https://cloud.digitalocean.com) with a payment method linked.
+
+The project is not free to run, you will be charged for the droplets, kubernetes cluster & docker registry you will create.
+The cost should be around 20-30$ per month depending on your usage.
+
+## Virtual machines specifications
+
+You need three part of infrastructure to run the project:
+
+- A server to run Jenkins.
+- A kubernetes cluster to run the whanos services.
+- A docker registry to store the docker images built by jenkins and used by the kubernetes cluster.
+
+### Step 1: Setup server for Jenkins
+
+On the dashboard, under the create menu, select Droplets.
+
+1. Choose a region close to you for the server location.
+2. Choose a basic droplet with ubuntu.
+3. Choose a regular CPU plan with at least 4GB of RAM.
+4. Choose between ssh keys or a password for authentication. For all exemples in this tutorial, we will use the ssh method.
+5. Set jenkins as the hostname.
+6. Check that it is linked to a project, the same one we will use to setup kubernetes on.
+7. Click create droplet.
+
+### Step 2: Setup the kubernetes cluster
+
+On the dashboard, under the create menu, select Kubernetes.
+
+1. Choose a region close to you for the server location.
+2. Choose a basic cluster with at least 2 nodes, each with 2GB of RAM & 50ish GB of disk space.
+3. Set the version to the latest stable one.
+4. Set the cluster name to whanos-cluster.
+5. Check that it is linked to a project, the same one we used to setup the droplet.
+6. Click create cluster.
+
+### Step 3: Setup the docker registry
+
+On the left menu of the website, under the manage section, select Container Registry & then create.
+
+1. Select your prefered subscription plan, the free one can only contain a couple of images, you may want to take the basic plan to have enough space
+2. Try to take a region close to your droplets for better performance.
+3. Give it a clear name (you can't change it later !), like `whanos-docker-registry`.
+4. Once created, go to the settings tab of the registry and select edit for the DigitalOcean Kubernetes integration.
+5. Select the cluster you created earlier and it should be done in a few seconds.
+
+## Configuring the Jenkins server
+
+The deployment of jenkins and it's configuration is entirely automated via ansible.
+
+In this section, we will setup ansible on your local machine and use it to deploy jenkins on the droplet you created earlier.
+
+### Step 1: Install ansible
+
+You can install ansible via most packages managers:
+
+<Tabs>
+<TabItem value="apt" label="Debian/Ubuntu (apt)">
+```bash
+sudo apt update
+sudo apt install ansible
+```
+</TabItem>
+<TabItem value="dnf" label="Fedora (dnf)">
+```bash
+sudo dnf install ansible
+```
+</TabItem>
+<TabItem value="pacman" label="Arch/Manjaro (pacman)">
+```bash
+sudo pacman -S ansible
+```
+</TabItem>
+</Tabs>
+
+### Step 2: Clone the whanos git repsository
+
+From now on, all commands must be run from the root of the cloned repository.
+
+```bash
+git clone https://github.com/JeanBizeul/Whanos.git
+```
+
+### Step 3: Write the inventory file
+
+You must use this template as is and fill the required fields.
+
+Then, save it as `inventory.yml` in the root of the cloned repository.
+
+```yml
+all:
+  children:
+    jenkinsServer:
+      hosts:
+        jenkins:
+          ansible_host: # You jenkins server IP adress comes here
+          ansible_user: root
+
+```
+
+### Step 4: Create the vault for storing admin username & password
+
+Ansible vault will be used to securely store the jenkins admin password required during the setup.
+
+It will be placed in `/group_vars/jenkinsServer/vault.yml`.
+
+There is already a file named like this in the repository, you must delete it and replace it by your own.
+
+```bash
+# Delete the existing vault file
+rm group_vars/jenkinsServer/vault.yml
+
+# Create a new vault file
+ansible-vault create group_vars/jenkinsServer/vault.yml
+
+# You will be prompted to enter a password for the vault, remember it well as you will need it later.
+# You can save it in a txt file, the name vault_pass.txt is already in the .gitignore file if you widh to use it.
+"your_vault_password" > vault_pass.txt
+
+
+# Inside the editor that opens, add the following lines:
+jenkins_admin_username: # ex: admin
+jenkins_admin_password: # https://www.lastpass.com/features/password-generator :)
+```
+
+### Step 5: Run the ansible playbook to deploy jenkins
+
+Remember to replace the vault_pass.txt by the name of the file you used to store your vault password if it's different.
+
+```bash
+ansible-playbook -i inventory.yml --vault-password-file vault_pass.txt  playbook.yml
+```
+
+And voila ! Jenkins should be deployed & configured on your server in a few minutes.
+
+You can access it by going to 'http://your_jenkins_server_ip:8080' in your web browser.
+
+You will be prompted to login with the admin username & password you set in the vault file earlier.
+
+

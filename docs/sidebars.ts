@@ -7,7 +7,8 @@ const sidebars: SidebarsConfig = {
       label: 'Docs',
       collapsible: false,
       items: [
-        'index',
+        'intro',
+        'setup'
       ],
     },
   ],
