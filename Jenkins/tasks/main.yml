@@ -21,4 +21,3 @@
 
 - name: Include docker tasks
   include_tasks: docker.yml
-

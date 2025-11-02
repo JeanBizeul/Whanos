@@ -1,13 +1,7 @@
 - name: Setup Jenkins
-  hosts: jenkinksVM
+  hosts: jenkinsServer
   become: yes
-  vars_files:
-    - secret.yml
   roles:
     - Jenkins
-
-#- name: Setup Kubernetes
-#  hosts: k8sCluster
-#  become: yes
-#  roles:
-#    - Kubernetes
+  environment:
+    DEBIAN_FRONTEND: noninteractive # Required because installing certain packages via apt reuires confirmation from user thus stucking ansible

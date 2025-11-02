@@ -1,24 +1,27 @@
-Jenkins:
+jenkins:
   securityRealm:
     local:
       allowsSignup: false
       users:
         - id: ${JENKINS_ADMIN_USERNAME}
           password: ${JENKINS_ADMIN_PASSWORD}
-    authorizationStrategy:
-    roleBased:
-      roles:
-        global:
-          - id: "admin"
-            name: Administer
-            permissions:
-              - Overall/Administer
-            entries:
-              - user: ${JENKINS_ADMIN_USERNAME}
-    tool:
-      git:
-        installations:
-          - name: git
-            home: /usr/local/bin/git
-    jobs:
-    - file: /var/jenkins_home/casc_configs/Job_dsl.groovy
+
+  # authorizationStrategy:
+  #   roleBased:
+  #     roles:
+  #       global:
+  #         - id: "admin"
+  #           name: Administer
+  #           permissions:
+  #             - Overall/Administer
+  #           entries:
+  #             - user: ${JENKINS_ADMIN_USERNAME}
+
+  # tool:
+  #   git:
+  #     installations:
+  #       - name: git
+  #         home: /usr/local/bin/git
+
+  # jobs:
+  #   - file: /var/lib/jenkins/casc_configs/Job_dsl.groovy
