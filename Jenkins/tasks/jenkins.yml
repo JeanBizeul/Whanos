@@ -149,6 +149,10 @@
     daemon_reload: yes
 
 
+- name: Reset failed state for Jenkins service
+  become: true
+  command: systemctl reset-failed jenkins.service
+
 # Always restart here because almost all of the steps above require a jenkins restart to take effect
 - name: Restart jenkins
   become: true
