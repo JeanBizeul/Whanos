@@ -8,4 +8,3 @@ Jenkins/files/docker-compose.yml
 Jenkins/files/Dockerfile
 jenkins-cli.jar
 vault_pass.txt
-secret.yml

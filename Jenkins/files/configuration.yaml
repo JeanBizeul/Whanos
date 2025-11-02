@@ -23,4 +23,5 @@ tool:
         home: /usr/local/bin/git
 
 jobs:
-  - file: /var/lib/jenkins/casc_configs/Job_dsl.groovy
+  - file: /var/lib/jenkins/casc_configs/images_job_dsl.groovy
+  - file: /var/lib/jenkins/casc_configs/link_project_job_dsl.groovy
