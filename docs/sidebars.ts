@@ -10,6 +10,7 @@ const sidebars: SidebarsConfig = {
         'intro',
         'setup',
         'how_to_use',
+        'techno',
       ],
     },
   ],
