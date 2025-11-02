@@ -1,67 +1,47 @@
 #!/bin/bash
 
+# Initialize an empty array to keep track of detected languages
+detected=()
 
-repository=$1
-C_app=false
-Java_app=false
-JavaScript_app=false
-Befunge_app=false
-Python_app=false
-
-detection=0
-application=none
-
-languages=("C_app" "Java_app" "JavaScript_app" "Befunge_app" "Python_app")
-
-if [ -z "$(ls -A $repository)" ]; then
-    echo "Error: The repository contains no files or directories."
-    exit 1
+# Check for C
+if [ -f "Makefile" ]; then
+    detected+=("C")
 fi
 
-
-if  [ "$(find $repository -type d -name app | wc -l)" -eq 0 ]; then
-    echo "Error: The repository must contain an 'app' directory."
-    exit 1
+# Check for Java
+if [ -f "app/pom.xml" ]; then
+    detected+=("Java")
 fi
 
-# Verification at the root level
-for entry in "$repository"/*
-do
-    if [[ -f "$entry" && "${entry##*/}" == "Makefile" ]]; then
-        C_app=true
-    fi
-    if [[ -f "$entry" && "${entry##*/}" == "package.json" ]]; then
-        JavaScript_app=true
-    fi
-    if [[ -f "$entry" && "${entry##*/}" == "requirements.txt" ]]; then
-        Python_app=true
-    fi
-done
+# Check for Javascript
+if [ -f "package.json" ]; then
+    detected+=("Javascript")
+fi
 
+# Check for Python
+if [ -f "requirements.txt" ]; then
+    detected+=("Python")
+fi
 
-# Verification in the app folder
-for entry in "$repository/app"/*
-do
-    if [[ -f "$entry" && "${entry##*/}" == "main.bf" ]]; then
-        Befunge_app=true
-    fi
-    if [[ -f "$entry" && "${entry##*/}"  == "pom.xml" ]]; then
-        Java_app=true
-    fi
-done
+# Check for Befunge
+if [ -f "app/main.bf" ]; then
+    detected+=("Befunge")
+fi
 
-# check multiple detection
-
-for app in "${languages[@]}"; do
-    if [ "${!app}" = true ]; then
-        echo "$app"
-        ((detection+=1))
-        application="$app"
-    fi
-    if [ "$detection" -ge 2 ]; then
-        echo "Error: The repository cannot match multiple detection criterion"
-        exit 1
-    fi
-done
-
-echo "$application"
+# Evaluate results
+if [ ${#detected[@]} -eq 0 ]; then
+    echo "No recognized project type found."
+    exit 1
+elif [ ${#detected[@]} -gt 1 ]; then
+    echo "Multiple project types detected: ${detected[*]}"
+    exit 1
+else
+    case "${detected[0]}" in
+        C) echo "whanos-c" ;;
+        Java) echo "whanos-java" ;;
+        Javascript) echo "whanos-javascript" ;;
+        Python) echo "whanos-python" ;;
+        Befunge) echo "whanos-befunge" ;;
+    esac
+fi
+exit 0
