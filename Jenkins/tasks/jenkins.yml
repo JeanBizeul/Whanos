@@ -84,6 +84,14 @@
         group: jenkins
         mode: "0644"
 
+- name: Copy whanos compatibility script
+  copy:
+    src: ../files/whanos_compatibility.sh
+    dest: /usr/local/bin/whanos_compatibility.sh
+    owner: jenkins
+    group: jenkins
+    mode: "0755"
+
 - name: Download Jenkins Plugin Manager CLI
   get_url:
     url: "https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar"
