@@ -6,21 +6,21 @@ jenkins:
         - id: ${JENKINS_ADMIN_USERNAME}
           password: ${JENKINS_ADMIN_PASSWORD}
 
-  authorizationStrategy:
-    roleStrategy:
-      roles:
-        global:
-          admin:
-            permissions:
-              - Overall/Administer
-      assignments:
-        ${JENKINS_ADMIN_USERNAME}: ["admin"]
+  # authorizationStrategy:
+  #   roleStrategy:
+  #     roles:
+  #       global:
+  #         admin:
+  #           permissions:
+  #             - Overall/Administer
+  #     assignments:
+  #       ${JENKINS_ADMIN_USERNAME}: ["admin"]
 
-  tool:
-    git:
-      installations:
-        - name: git
-          home: /usr/local/bin/git
+tool:
+  git:
+    installations:
+      - name: git
+        home: /usr/local/bin/git
 
-  jobs:
-    - file: /var/lib/jenkins/casc_configs/Job_dsl.groovy
+jobs:
+  - file: /var/lib/jenkins/casc_configs/Job_dsl.groovy
