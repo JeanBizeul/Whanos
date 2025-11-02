@@ -7,7 +7,7 @@ const baseUrl = process.env.BASE_URL || '/whanos/';  // Used to make previews
 const config: Config = {
   title: 'Whanos docs',
   tagline: 'Happy whaling !',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/whanos_logo.jpg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -58,7 +58,7 @@ const config: Config = {
       title: 'Whanos docs',
       logo: {
         alt: 'Whanos logo',
-        src: 'img/logo.svg',
+        src: 'img/whanos_logo.jpg',
         href: '/',
       },
       items: [
@@ -102,6 +102,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      additionalLanguages: ['bash'],
     },
   } satisfies Preset.ThemeConfig,
 };
