@@ -135,6 +135,16 @@ jenkins_admin_username: # ex: admin
 jenkins_admin_password: # https://www.lastpass.com/features/password-generator :)
 ```
 
+:::tip
+
+If you want to edit the vault file later, you can use the command:
+
+```bash
+ansible-vault edit group_vars/jenkinsServer/vault.yml
+```
+
+:::
+
 ### Step 5: Run the ansible playbook to deploy jenkins
 
 Remember to replace the vault_pass.txt by the name of the file you used to store your vault password if it's different.
@@ -143,10 +153,30 @@ Remember to replace the vault_pass.txt by the name of the file you used to store
 ansible-playbook -i inventory.yml --vault-password-file vault_pass.txt  playbook.yml
 ```
 
+:::tip
+
+If you get an error related to ssh when launching the playbook, make sure that your ssh key is added to your ssh agent with the command:
+
+```bash
+ssh-add /path/to/your/private/key
+```
+
+And be sure to login at least once on the jenkins server with ssh to add it's fingerprint to your known_hosts file:
+
+```bash
+ssh root@your_jenkins_server_ip
+```
+
+:::
+
 And voila ! Jenkins should be deployed & configured on your server in a few minutes.
 
 You can access it by going to 'http://your_jenkins_server_ip:8080' in your web browser.
 
 You will be prompted to login with the admin username & password you set in the vault file earlier.
 
+
+## Next steps
+
+From now, you can follow the next guide that will explain you how to use the whanos project !
 

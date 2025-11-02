@@ -8,7 +8,8 @@ const sidebars: SidebarsConfig = {
       collapsible: false,
       items: [
         'intro',
-        'setup'
+        'setup',
+        'how_to_use',
       ],
     },
   ],
