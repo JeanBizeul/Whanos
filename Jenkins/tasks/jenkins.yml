@@ -67,13 +67,22 @@
     group: jenkins
     mode: "0644"
 
-- name: Copy Groovy file
-  copy:
-    src: ../files/Job_dsl.groovy
-    dest: "{{ jenkins_casc_config }}"
-    owner: jenkins
-    group: jenkins
-    mode: "0644"
+- name: Copy job dsl Groovy files
+  block:
+    - name: Copy images job dsl Groovy file
+      copy:
+        src: ../files/images_job_dsl.groovy
+        dest: "{{ jenkins_casc_config }}"
+        owner: jenkins
+        group: jenkins
+        mode: "0644"
+    - name: Copy link project job dsl Groovy file
+      copy:
+        src: ../files/link_project_job_dsl.groovy
+        dest: "{{ jenkins_casc_config }}"
+        owner: jenkins
+        group: jenkins
+        mode: "0644"
 
 - name: Download Jenkins Plugin Manager CLI
   get_url:
