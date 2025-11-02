@@ -20,7 +20,12 @@ tool:
   git:
     installations:
       - name: git
-        home: /usr/local/bin/git
+        home: /usr/bin/git
+
+# Required to allow Jenkins to connect to Git repositories over SSH without manual host key verification
+security:
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "acceptFirstConnectionStrategy"
 
 jobs:
   - file: /var/lib/jenkins/casc_configs/images_job_dsl.groovy
